@@ -1,5 +1,3 @@
-
-
 package echo.music.iad1tya.ui.utils
 
 import androidx.compose.animation.core.AnimationSpec
@@ -20,73 +18,52 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun appBarScrollBehavior(
-    state: TopAppBarState = rememberTopAppBarState(),
-    canScroll: () -> Boolean = { true },
-    snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
-    flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
+  state: TopAppBarState = rememberTopAppBarState(),
+  canScroll: () -> Boolean = { true },
+  snapAnimationSpec: AnimationSpec<Float>? = spring(stiffness = Spring.StiffnessMediumLow),
+  flingAnimationSpec: DecayAnimationSpec<Float>? = rememberSplineBasedDecay(),
 ): TopAppBarScrollBehavior =
-    AppBarScrollBehavior(
-        state = state,
-        snapAnimationSpec = snapAnimationSpec,
-        flingAnimationSpec = flingAnimationSpec,
-        canScroll = canScroll,
-    )
+  AppBarScrollBehavior(
+    state = state,
+    snapAnimationSpec = snapAnimationSpec,
+    flingAnimationSpec = flingAnimationSpec,
+    canScroll = canScroll,
+  )
 
 @ExperimentalMaterial3Api
 class AppBarScrollBehavior(
-    override val state: TopAppBarState,
-    override val snapAnimationSpec: AnimationSpec<Float>?,
-    override val flingAnimationSpec: DecayAnimationSpec<Float>?,
-    val canScroll: () -> Boolean = { true },
+  override val state: TopAppBarState,
+  override val snapAnimationSpec: AnimationSpec<Float>?,
+  override val flingAnimationSpec: DecayAnimationSpec<Float>?,
+  val canScroll: () -> Boolean = { true },
 ) : TopAppBarScrollBehavior {
-    override val isPinned: Boolean = true
-    override var nestedScrollConnection =
-        object : NestedScrollConnection {
-            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
-                if (!canScroll()) return Offset.Zero
-                // Hide the top app bar when scrolling down the page (swiping up, available.y < 0f)
-                if (available.y < 0f) {
-                    val prevHeightOffset = state.heightOffset
-                    state.heightOffset += available.y
-                    return Offset(0f, state.heightOffset - prevHeightOffset)
-                }
-                return Offset.Zero
-            }
+  override val isPinned: Boolean = true
+  override var nestedScrollConnection =
+    object : NestedScrollConnection {
+      override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+        // Return Offset.Zero so the AppBar remains pinned and never hides
+        return Offset.Zero
+      }
 
-            override fun onPostScroll(
-                consumed: Offset,
-                available: Offset,
-                source: NestedScrollSource,
-            ): Offset {
-                if (!canScroll()) return Offset.Zero
-                state.contentOffset += consumed.y
-                
-                // Reset content offset if we hit the top of the list
-                if (state.heightOffset == 0f || state.heightOffset == state.heightOffsetLimit) {
-                    if (consumed.y == 0f && available.y > 0f) {
-                        state.contentOffset = 0f
-                    }
-                }
-                
-                // Show the top app bar ONLY when scrolling up reveals overscroll (i.e. we are at the top of the list)
-                if (available.y > 0f) {
-                    val prevHeightOffset = state.heightOffset
-                    state.heightOffset += available.y
-                    return Offset(0f, state.heightOffset - prevHeightOffset)
-                }
-                return Offset.Zero
-            }
-        }
+      override fun onPostScroll(
+        consumed: Offset,
+        available: Offset,
+        source: NestedScrollSource,
+      ): Offset {
+        // Return Offset.Zero so the AppBar remains pinned and never hides
+        return Offset.Zero
+      }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 suspend fun TopAppBarState.resetHeightOffset() {
-    if (heightOffset != 0f) {
-        animate(
-            initialValue = heightOffset,
-            targetValue = 0f,
-        ) { value, _ ->
-            heightOffset = value
-        }
+  if (heightOffset != 0f) {
+    animate(
+      initialValue = heightOffset,
+      targetValue = 0f,
+    ) { value, _ ->
+      heightOffset = value
     }
+  }
 }
