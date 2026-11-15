@@ -991,7 +991,10 @@
     <string name="import_custom_font">Importer une police personnalisée</string>
     <string name="typography_preview">Aperçu de la typographie</string>
     <string name="preview_text_quote">Portez ce vieux whisky au juge blond qui Fume</string>
-
+    <string name="live_preview">Aperçu en direct</string>
+    <string name="preview_song_title">Last Thing You Need</string>
+    <string name="preview_song_artist">Morgan Wallen</string>
+    
     <string name="recommendation_source">Fournisseur de recommandations</string>
     <string name="recommendation_source_youtube">YouTube Music</string>
     <string name="recommendation_source_spotify">Spotify</string>
